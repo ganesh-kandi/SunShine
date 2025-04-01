@@ -1,5 +1,6 @@
 package com.project.SunShine.contolller;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.print.attribute.standard.Media;
@@ -47,17 +48,16 @@ public class GuestController {
 		return guestService.getGuest(id);
 	}
 	
-	@PostMapping("/CreateGuest")
+	@PostMapping("/createguest")
 	public String postMethodName(@RequestBody Guest guest) {
-		//TODO: process POST request
-		guestService.saveGuest(guest);
-		return "success";
+		return guestService.saveGuest(guest);
+
 	}
 	
 	@PostMapping("/CreateRoom")
-	public String createRoom(@RequestBody Rooms room) {
+	public String createRoom() {
 		//TODO: process POST request
-		roomsService.saveRoom(room);
+		//roomsService.saveRoom();
 		return "success";
 	}
 	

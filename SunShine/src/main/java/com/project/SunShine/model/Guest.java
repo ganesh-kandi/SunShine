@@ -10,7 +10,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+
 import lombok.NoArgsConstructor;
 
 
@@ -21,70 +21,67 @@ import lombok.NoArgsConstructor;
 public class Guest {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="g-id")
-	private Integer id;
+	private Integer guest_id;
 	@Column
-	private String name;
+	private String g_name;
 	@Column
-	private String contact;
+	private String g_contact;
 	@Column
-	private String address;
+	private String g_address;
 	@Column
-	private String eMail;
+	private String g_eMail;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name="r-id", referencedColumnName = "r-id")
-	private Rooms rooms;
-	
-	@Override
-	public String toString() {
-		return "Guest [id=" + id + ", name=" + name + ", contact=" + contact + ", address=" + address + ", eMail="
-				+ eMail + "]";
-	}
-	
-	public Rooms getRooms() {
-		return rooms;
+	@JoinColumn(name="roomnumber")
+	private Rooms roomnumber;
+
+	public Integer getGuest_id() {
+		return guest_id;
 	}
 
-	public void setRooms(Rooms rooms) {
-		this.rooms = rooms;
+	public void setGuest_id(Integer guest_id) {
+		this.guest_id = guest_id;
 	}
 
-	public Integer getId() {
-		return id;
+	public String getG_name() {
+		return g_name;
 	}
 
-	public void setId(Integer id) {
-		this.id = id;
+	public void setG_name(String g_name) {
+		this.g_name = g_name;
 	}
 
-	public String getName() {
-		return name;
+	public String getG_contact() {
+		return g_contact;
 	}
-	public void setName(String name) {
-		this.name = name;
+
+	public void setG_contact(String g_contact) {
+		this.g_contact = g_contact;
 	}
-	
-	public String getContact() {
-		return contact;
+
+	public String getG_address() {
+		return g_address;
 	}
-	public void setContact(String contact) {
-		this.contact = contact;
+
+	public void setG_address(String g_address) {
+		this.g_address = g_address;
 	}
-	public String getAddress() {
-		return address;
+
+	public String getG_eMail() {
+		return g_eMail;
 	}
-	public void setAddress(String address) {
-		this.address = address;
+
+	public void setG_eMail(String g_eMail) {
+		this.g_eMail = g_eMail;
 	}
-	public String geteMail() {
-		return eMail;
+
+	public Rooms getRoomnumber() {
+		return roomnumber;
 	}
-	public void seteMail(String eMail) {
-		this.eMail = eMail;
+
+	public void setRoomnumber(Rooms roomnumber) {
+		this.roomnumber = roomnumber;
 	}
-	
-	
-	
 }
