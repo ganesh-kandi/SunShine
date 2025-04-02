@@ -6,6 +6,7 @@ import java.util.Random;
 
 import com.project.SunShine.dao.RoomsDao;
 import com.project.SunShine.model.Rooms;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,17 +54,35 @@ public class GuestService {
             assignRoom = availableRooms.get(random.nextInt(availableRooms.size()));
         }
         if(!assignRoom.hasAvailableBeds()){
-            return "no beds are available";
+            return "no beds are available in "+ assignRoom.getRoomNumber();
         }
         guest.setRoomnumber(assignRoom);
         guestDao.save(guest);
 
         assignRoom.setOccupiedBeds(assignRoom.getOccupiedBeds()+1);
         roomsDao.save(assignRoom);
-        return "guest"  + guest.getGuest_id() +" assigned the roomNumber : "+assignRoom.getRoomNumber();
+        return "guest "  + guest.getGuest_id() +" assigned the roomNumber : "+assignRoom.getRoomNumber();
     }
 
     public void saveGuestList(List<Guest> guest) {
         guestDao.saveAll(guest);
+    }
+
+    public boolean removeGuest(Integer id) {
+        Guest r_guest = guestDao.findById(id).orElseThrow((() -> new RuntimeException("guest not found in DB")));
+        guestDao.deleteGuest(r_guest.getGuest_id());
+        int roomNumber= r_guest.getRoomnumber().getRoomNumber();
+        int count = incrementRoomNumber(roomNumber);
+        if(count>0){
+            System.out.println("room details are also updated successfully");
+            return true;
+        }else{
+            System.out.println("room details are not updated.");
+            return false;
+        }
+    }
+    @Transactional
+    public int incrementRoomNumber(int roomNumber){
+        return roomsDao.updateRoomCount(roomNumber);
     }
 }

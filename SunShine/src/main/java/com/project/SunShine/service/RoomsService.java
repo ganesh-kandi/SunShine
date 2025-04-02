@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import com.project.SunShine.dao.RoomsDao;
 import com.project.SunShine.model.Rooms;
 
+import java.util.List;
+
 @Service
 public class RoomsService {
 	@Autowired
@@ -23,4 +25,13 @@ public class RoomsService {
 	
 }
 
+    public List<Rooms> getAllAvailableRooms() {
+		List<Rooms> availableRooms = roomsDao.findRoomsWithAvailableBeds();
+		if(availableRooms.isEmpty()){
+			System.out.println("Rooms are not available");
+		}else{
+			return availableRooms;
+		}
+		return null;
+    }
 }
