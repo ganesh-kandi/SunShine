@@ -8,13 +8,13 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 @Service
 public class GuestService {
@@ -129,14 +129,8 @@ public class GuestService {
             Optional<Rooms> newRoom = roomsDao.findById(newRoomNumber);
             //room number should be updated
             //and also occupied beds are also update
-            /*roomDetails.forEach((key, value)->{
-                    Field field = ReflectionUtils.findField(Guest.class, key);
-                    field.setAccessible(true);
-                    ReflectionUtils.setField(field, guest.get(),value);
-            });*/
             if(newRoom.isPresent()) {
                 guest.get().setRoomnumber(newRoom.get());
-                //guestDao.save(guest.get());
                 this.updateRoom(guest.get(), newRoom.get());
             }
             return "rooms details are updated for guest : "+ guest.get().getGuest_id() + " and new roomNumber is : "+newRoom.get().getRoomNumber();
@@ -149,4 +143,35 @@ public class GuestService {
         return roomsDao.updateRoomCount(roomNumber);
     }
 
+    public int getGuestsCount() {
+        return guestDao.getGuestsCount();
+    }
+
+    public int findRoomsWithAvailableBedsCount() {
+        List<Rooms> roomsList = roomsDao.findAll();
+
+        int availableBeds = 0;
+
+        for(Rooms room: roomsList){
+            availableBeds += room.getTotalBeds()-room.getOccupiedBeds();
+        }
+        return availableBeds;
+    }
+
+    public Optional<List<Rooms>> getRoomsByType(int type) {
+
+        List<Rooms> roomsList = roomsDao.findAll();
+
+        Map<String, List<Rooms>> roomsMap = roomsList.stream().collect(Collectors.groupingBy(room -> String.valueOf(room.getTotalBeds())));
+
+        return Optional.ofNullable(roomsMap.get(String.valueOf(type)));
+    }
+
+    public String getRoomsByTypeCount(int type){
+        Optional<List<Rooms>> rooms= getRoomsByType(type);
+        if(rooms.isEmpty()){
+            return "The total number of rooms with type "+type +" are not available";
+        }
+        return "The total number of rooms are available with type "+type +" are "+rooms.get().size();
+    }
 }
