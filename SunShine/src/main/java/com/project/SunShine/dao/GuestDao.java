@@ -17,4 +17,7 @@ public interface GuestDao extends JpaRepository<Guest, Integer>{
     @Transactional
     @Query("DELETE FROM Guest g WHERE g.guest_id = :guestid")
     void deleteGuest(@Param("guestid") int guestId);
+
+    @Query("SELECT COUNT(*) FROM Guest")
+    int getGuestsCount();
 }
