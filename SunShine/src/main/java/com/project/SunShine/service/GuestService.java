@@ -2,6 +2,9 @@ package com.project.SunShine.service;
 
 import com.project.SunShine.dao.GuestDao;
 import com.project.SunShine.dao.RoomsDao;
+import com.project.SunShine.exception.GuestorRoomNotFound;
+import com.project.SunShine.exception.NoGuestFoundException;
+import com.project.SunShine.exception.NoRoomFoundException;
 import com.project.SunShine.model.Guest;
 import com.project.SunShine.model.Rooms;
 import jakarta.transaction.Transactional;
@@ -28,13 +31,16 @@ public class GuestService {
 
     public Guest getGuest(Integer guest) {
         System.out.println("we are in service layer..");
-        Guest getGuest = guestDao.findById(guest).get();
-        if (getGuest != null) {
-            System.out.println("in if" + getGuest);
-            return getGuest;
-        } else {
-            System.out.println("in else. person not found");
-            return null;
+        try {
+            Guest getGuest = guestDao.findById(guest).get();
+            if (getGuest != null) {
+                System.out.println("in if" + getGuest);
+                return getGuest;
+            }else {
+                throw new NoGuestFoundException("no guests found");
+            }
+        }catch(Exception e){
+            throw new NoGuestFoundException("no guests found");
         }
 
     }
@@ -47,12 +53,12 @@ public class GuestService {
         Rooms assignRoom;
         if (guest.getRoomnumber().getRoomNumber() != null) {
             assignRoom = roomsDao.findById(guest.getRoomnumber().getRoomNumber())
-                    .orElseThrow(()->new RuntimeException("Room not found"));
+                    .orElseThrow(()->new NoRoomFoundException("Room not found"));
 
         }else{
             List<Rooms> availableRooms = roomsDao.findRoomsWithAvailableBeds();
             if(availableRooms.isEmpty()){
-                return "Rooms are not available";
+                throw new NoRoomFoundException("Rooms not found");
             }
             Random random = new Random();
             assignRoom = availableRooms.get(random.nextInt(availableRooms.size()));
@@ -119,7 +125,7 @@ public class GuestService {
         Optional<Guest> guest = guestDao.findById(id);
 
         if(guest.isEmpty() || roomDetails.get(ROOM_NUMBER)== null){
-            return "guest or room not found.. ";
+            throw new GuestorRoomNotFound("Guest or Room not found while updating the Data");
         }else{
             int oldRoomNumber = guest.get().getRoomnumber().getRoomNumber();
             Map<String,Object> objectMap = (Map<String, Object>) roomDetails.get(ROOM_NUMBER);

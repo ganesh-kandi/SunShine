@@ -11,4 +11,16 @@ public class ExceptionHandler {
         ApiError apiError= new ApiError("40000","internal Server error", "no rooms found with given type","no rooms found with given type");
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(value= NoGuestFoundException.class)
+    public ResponseEntity<ApiError> noGuestFound(){
+        ApiError apiError= new ApiError("40001","Internal Server error", "no guests found with given data","no guests found with given data");
+        return  new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);
+    }
+
+    @org.springframework.web.bind.annotation.ExceptionHandler(value=GuestorRoomNotFound.class)
+    public ResponseEntity<ApiError> noroomorGuestFound(String description){
+        ApiError apiError= new ApiError("40002", "Internal Server error", description,description);
+        return new ResponseEntity<>(apiError,HttpStatus.BAD_REQUEST);
+    }
 }
