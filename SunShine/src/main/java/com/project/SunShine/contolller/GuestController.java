@@ -7,6 +7,9 @@ import java.util.Optional;
 import com.project.SunShine.exception.NoRoomFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +37,7 @@ public class GuestController {
 
 
     @GetMapping(value = "/getguest", produces = "application/json")
-    public Guest getGuest(@RequestParam Integer id) {
+    public Guest getGuest(@RequestParam Integer id, @PageableDefault(size= 20, sort= "name") Pageable pageable) {
 
         return guestService.getGuest(id);
     }
